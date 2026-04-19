@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { Card, Button, ScoreBadge } from '../components/UI';
-import { getTrafficLightColor } from '../utils/scoring';
+import { getAustrianAreaInsights, getAustrianRealitySummary, getOverallBandLabel, getTrafficLightColor } from '../utils/scoring';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 export const Results: React.FC = () => {
@@ -17,6 +17,9 @@ export const Results: React.FC = () => {
   }, [profile, navigate]);
 
   const scores = profile.scores;
+  const overallBand = getOverallBandLabel(scores.overall);
+  const austrianSummary = getAustrianRealitySummary(profile);
+  const areaInsights = getAustrianAreaInsights(profile);
 
   const scoreData = [
     { name: 'Liquidity', value: scores.liquidity, label: 'Liquidität' },
@@ -94,6 +97,22 @@ export const Results: React.FC = () => {
           </div>
         </Card>
       </div>
+
+      <Card className="mb-12">
+        <h3 className="font-bold text-gray-800 mb-2">Einordnung nach österreichischer Lebensrealität</h3>
+        <p className="text-gray-600 mb-3">{austrianSummary}</p>
+        <ul className="space-y-1 mb-4">
+          {areaInsights.map((insight, idx) => (
+            <li key={idx} className="text-sm text-gray-600">- {insight}</li>
+          ))}
+        </ul>
+        <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 border border-gray-200">
+          <span className="text-sm text-gray-500">Klare Einordnung:</span>
+          <span className="text-base font-bold text-gray-900">
+            Bei Ihrem Profil liegen Sie aktuell bei <span className="text-[#D70F21]">{overallBand}</span> im Gesamtscore.
+          </span>
+        </div>
+      </Card>
 
       {/* Recommended Modules */}
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Empfohlene Vertiefung</h2>

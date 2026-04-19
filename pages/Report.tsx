@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { Button, Card, InputGroup, ScoreBadge } from '../components/UI';
-import { getTrafficLightColor, getTrafficLight } from '../utils/scoring';
+import { getAustrianAreaInsights, getAustrianRealitySummary, getOverallBandLabel, getTrafficLightColor, getTrafficLight } from '../utils/scoring';
 import { saveToDatabase } from '../services/api';
 
 export const Report: React.FC = () => {
@@ -33,6 +33,9 @@ export const Report: React.FC = () => {
   }, [profile]);
 
   const scores = profile.scores;
+  const austrianSummary = getAustrianRealitySummary(profile);
+  const overallBand = getOverallBandLabel(scores.overall);
+  const areaInsights = getAustrianAreaInsights(profile);
   
   // --- Helpers for Dynamic Content ---
 
@@ -307,6 +310,14 @@ export const Report: React.FC = () => {
            <div>
              <h2 className="text-2xl font-bold text-gray-900 print:text-black">Gesamtergebnis</h2>
              <p className="text-gray-500 print:text-gray-700">Durchschnittlicher Score über alle 5 Lebensbereiche.</p>
+             <p className="text-gray-600 print:text-gray-800 mt-2 max-w-2xl">
+               {austrianSummary} Das entspricht aktuell einer Einordnung von {overallBand}.
+             </p>
+             <div className="mt-3 space-y-1">
+               {areaInsights.map((insight, idx) => (
+                 <p key={idx} className="text-xs text-gray-500 print:text-gray-700">{insight}</p>
+               ))}
+             </div>
            </div>
         </div>
 
